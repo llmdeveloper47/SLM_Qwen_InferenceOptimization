@@ -7,13 +7,14 @@ from pathlib import Path
 import pandas as pd
 import torch
 import json
+import time
 from torch.profiler import profile, ProfilerActivity, record_function
 
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from utils.config_loader import load_config
-from utils.model_utils import load_model_and_tokenizer
+from utils.model_utils import load_model_and_tokenizer, print_model_summary, get_model_info
 
 
 def profile_with_pytorch_profiler(
@@ -237,6 +238,5 @@ def main():
 
 
 if __name__ == "__main__":
-    import time  # Import here to avoid conflicts
     main()
 
