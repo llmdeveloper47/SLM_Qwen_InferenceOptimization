@@ -1,0 +1,42 @@
+# Week 1: Baseline Profiling Configuration
+
+# Model Configuration
+model:
+  name: "codefactory4791/intent-classification-qwen"
+  base_model: "Qwen/Qwen2.5-0.5B-Instruct"
+  num_labels: 23
+  device: "cuda"  # or "cpu"
+  dtype: "float32"  # Options: float32, float16, bfloat16
+
+# Dataset Configuration
+dataset:
+  hf_name: "codefactory4791/amazon_test"
+  split: "test"
+  local_path: "./data/val_df.csv"
+  text_column: "text"
+  label_column: "labels"
+  sample_sizes: [100, 500, 1000]  # For initial profiling
+
+# Profiling Configuration
+profiling:
+  batch_sizes: [1, 4, 8, 16, 32, 64]  # Test different batch sizes
+  num_warmup_runs: 3  # Warmup iterations before measuring
+  num_measurement_runs: 10  # Number of runs for averaging
+  max_length: 512  # Maximum sequence length
+  
+  # Memory profiling
+  track_memory: true
+  memory_interval: 0.1  # seconds
+  
+  # Save intermediate results
+  save_raw_results: true
+  results_dir: "./results"
+
+# Output Configuration
+output:
+  results_dir: "./results"
+  plots_dir: "./results/plots"
+  logs_dir: "./results/logs"
+  metrics_file: "baseline_metrics.json"
+  detailed_metrics_file: "detailed_metrics.csv"
+
