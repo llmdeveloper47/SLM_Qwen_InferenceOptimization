@@ -45,13 +45,14 @@ def main(skip_download=False, skip_profiling=False, skip_viz=False):
         print("\n" + "="*70)
         print("STEP 1: DOWNLOADING DATA")
         print("="*70)
-        from scripts import download_data
-        import importlib
-        
-        # Import and run download script
-        sys.path.insert(0, str(Path(__file__).parent / "scripts"))
-        download_module = importlib.import_module("01_download_data")
-        download_module.download_and_prepare_data(config)
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, "scripts/01_download_data.py"],
+            cwd=Path(__file__).parent
+        )
+        if result.returncode != 0:
+            print("Error in data download step")
+            return
     else:
         print("\n[SKIPPED] Step 1: Download data")
     
@@ -59,18 +60,27 @@ def main(skip_download=False, skip_profiling=False, skip_viz=False):
     print("\n" + "="*70)
     print("STEP 2: BASELINE INFERENCE AND PROFILING")
     print("="*70)
-    import importlib
-    sys.path.insert(0, str(Path(__file__).parent / "scripts"))
-    baseline_module = importlib.import_module("02_baseline_inference")
-    baseline_module.run_baseline_inference(config)
+    import subprocess
+    result = subprocess.run(
+        [sys.executable, "scripts/02_baseline_inference.py"],
+        cwd=Path(__file__).parent
+    )
+    if result.returncode != 0:
+        print("Error in baseline inference step")
+        return
     
     # Step 3: Detailed profiling
     if not skip_profiling:
         print("\n" + "="*70)
         print("STEP 3: DETAILED PROFILING")
         print("="*70)
-        profiling_module = importlib.import_module("03_detailed_profiling")
-        profiling_module.main()
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, "scripts/03_detailed_profiling.py"],
+            cwd=Path(__file__).parent
+        )
+        if result.returncode != 0:
+            print("Warning: Detailed profiling encountered errors (non-critical)")
     else:
         print("\n[SKIPPED] Step 3: Detailed profiling")
     
@@ -79,8 +89,13 @@ def main(skip_download=False, skip_profiling=False, skip_viz=False):
         print("\n" + "="*70)
         print("STEP 4: GENERATING VISUALIZATIONS")
         print("="*70)
-        viz_module = importlib.import_module("04_visualize_results")
-        viz_module.main()
+        import subprocess
+        result = subprocess.run(
+            [sys.executable, "scripts/04_visualize_results.py"],
+            cwd=Path(__file__).parent
+        )
+        if result.returncode != 0:
+            print("Warning: Visualization encountered errors (non-critical)")
     else:
         print("\n[SKIPPED] Step 4: Visualization")
     
